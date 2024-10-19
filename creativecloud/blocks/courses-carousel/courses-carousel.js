@@ -1,4 +1,4 @@
-function positionPaddles(){
+function positionCoursePaddles(){
     try{
         const rightPaddle = document.querySelector(".courses-right-paddle");
         const leftPaddle = document.querySelector(".courses-left-paddle");
@@ -49,7 +49,7 @@ function coursesScrollListener(){
     }
 }
 
-function paddleClickListeners(scroll, rightCounter){
+function coursePaddleClickListeners(scroll, rightCounter){
     let scrollDuration = 600;
     const rightPaddle = document.getElementById('courses-right-paddle');
     const leftPaddle = document.getElementById('courses-left-paddle');
@@ -178,10 +178,10 @@ async function fetchCoursesContent(scroll, rightCounter, max){
             if(window.innerWidth <= 767){
                 coursesScrollListener();  
             }else{
-                positionPaddles();
+                positionCoursePaddles();
                 const rightPaddle = document.querySelector(".courses-right-paddle");
                 rightPaddle.classList.remove('hidden');
-                paddleClickListeners(scroll, rightCounter, max);
+                coursePaddleClickListeners(scroll, rightCounter, max);
             }
         }
     }catch(err){
@@ -287,7 +287,7 @@ export default async function init(el) {
         if (window.innerWidth <= 767) {
             coursesScrollListener();
         } else {
-            positionPaddles();
+            positionCoursePaddles();
         }                           
     });
 
