@@ -1,8 +1,8 @@
 function positionPaddles(){
     try{
-        const rightPaddle = document.querySelector(".right-paddle");
-        const leftPaddle = document.querySelector(".left-paddle");
-        const element = document.querySelector(".placeholder-div-for-you");
+        const rightPaddle = document.querySelector(".courses-right-paddle");
+        const leftPaddle = document.querySelector(".courses-left-paddle");
+        const element = document.querySelector(".courses-placeholder-div-for-you");
 
         if (element) {
             const elementRect = element.getBoundingClientRect();
@@ -27,13 +27,13 @@ function positionPaddles(){
     }
 }
 
-function forYouScrollListener(){
+function coursesScrollListener(){
     try {
-        const placeholderDiv = document.querySelector('.placeholder-div-for-you');
+        const placeholderDiv = document.querySelector('.courses-placeholder-div-for-you');
 
         placeholderDiv.addEventListener('scroll', function(e) {
             let scrollLeft = e.target.scrollLeft;
-            const featuredParent = document.querySelector('.featured-parent');
+            const featuredParent = document.querySelector('.courses-featured-parent');
             const featuredHeader = document.querySelector('.featured-header');
 
             if (scrollLeft > 9) {
@@ -51,9 +51,9 @@ function forYouScrollListener(){
 
 function paddleClickListeners(scroll, rightCounter){
     let scrollDuration = 600;
-    const rightPaddle = document.getElementById('right-paddle');
-    const leftPaddle = document.getElementById('left-paddle');
-    const placeholderDiv = document.querySelector('.placeholder-div-for-you');
+    const rightPaddle = document.getElementById('courses-right-paddle');
+    const leftPaddle = document.getElementById('courses-left-paddle');
+    const placeholderDiv = document.querySelector('.courses-placeholder-div-for-you');
 
     rightPaddle.addEventListener('click', function(e) {
         try {
@@ -113,37 +113,33 @@ function paddleClickListeners(scroll, rightCounter){
     });
 }
 
-function abbreviate(val=0){
-    if (val >= 1_000_000_000_000) {
-        return (val / 1_000_000_000_000).toFixed(1) + 'T';
-    } else if (val >= 1_000_000_000) {
-        return (val / 1_000_000_000).toFixed(1) + 'B';
-    } else if (val >= 1_000_000) {
-        return (val / 1_000_000).toFixed(1) + 'M';
-    } else if (val >= 1_000) {
-        return (val / 1_000).toFixed(1) + 'K';
-    } else {
-        return val.toString();
-    }
-  }
-
-function renderFeaturedCards(forYouCommunities){
+async function renderCourseCards(forYouCommunities){
     try {
+
+        // const response = await fetch(`https://community-dev.adobe.io/api/v1/dynamodb/courses`, {
+        //     method: 'GET',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         'x-api-Key': 'alfred-community-hubs',
+        //     }
+        // });
+        // const fetchedCourses = await response.json();
+        // const recommendedcourses =  fetchedCourses.filter(course => forYouCommunities.includes(course.category));
+
+        // console.log("recommended courses:", recommendedcourses);
+
+        const resp = await fetch('https://main--cc--sejalnaidu.hlx.page/drafts/snaidu/community/authorings/recommendedcourses.json');
+        const {data} = await resp.json();
+
         const placeholders = document.querySelectorAll('.featured-card-wrapper');
         placeholders.forEach((element, index) => {
 
-            let productJson = JSON.parse(forYouCommunities[index]);
+            let productJson = data[index];
 
-            const banner = element.querySelector('.channel-card-banner');
+            const banner = element.querySelector('.course-banner');
             banner.classList.remove('ghost-load-cards');
-            banner.style.backgroundImage = `url(https://community-dev.adobe.com${productJson['avatar']['large_href']})`;
+            banner.style.backgroundImage = `url(${productJson['image']})`;
             banner.style.backgroundSize = "cover";
-
-            const iconDiv = document.createElement('img');
-            iconDiv.src = 'https://main--cc--sejalnaidu.hlx.page/drafts/snaidu/community/images/adobe-logo.svg';
-            const icon = element.querySelector('.channel-icon');
-            icon.classList.remove('ghost-load-cards');
-            icon.appendChild(iconDiv);
 
             const titleSpan = document.createElement('span');
             titleSpan.innerHTML = productJson['title'];
@@ -152,25 +148,19 @@ function renderFeaturedCards(forYouCommunities){
             title.classList.remove('box-style');
             title.appendChild(titleSpan);
 
-            const statsDiv = document.createElement('img');
-            statsDiv.src = 'https://main--cc--sejalnaidu.hlx.page/drafts/snaidu/community/images/s2-icon-conversations-icon.svg';
-            const statsIcon = element.querySelector('.product-stat-icon');
-            statsIcon.classList.remove('ghost-load-cards');
-            statsIcon.classList.remove('box-style');
-            statsIcon.appendChild(statsDiv);
-
-            const statsCount = element.querySelector('.product-stat-count');
-            statsCount.classList.remove('ghost-load-cards');
-            statsCount.classList.remove('box-style');
-            let count = abbreviate(productJson['topics']['count']);
-            statsCount.innerHTML = `${count} conversations`;
+            const descSpan = document.createElement('span');
+            descSpan.innerHTML = productJson['description'];
+            const desc = element.querySelector('.product-stat-count');
+            desc.classList.remove('ghost-load-cards');
+            desc.classList.remove('box-style');
+            desc.appendChild(descSpan);
 
             const visit = element.querySelector('.channel-visit-btn');
             visit.classList.remove('ghost-load-cards');
-            visit.innerHTML = "Visit";
+            visit.innerHTML = "View";
 
             element.addEventListener('click', () => {
-                window.location.href = 'https://community-dev.adobe.com'+productJson['view_href'];
+                window.location.href = `https://localhost.adobe.com:8002/courses/${productJson['id']}`;
             });
         });
     } catch (err) {
@@ -178,18 +168,18 @@ function renderFeaturedCards(forYouCommunities){
     }
 }
 
-async function fetchForYouContent(scroll, rightCounter, max){
+async function fetchCoursesContent(scroll, rightCounter, max){
     try{
         const res = await fetch('https://community-dev.adobe.com/plugins/custom/adobe/adobedxdev/get-featured-communities');
         const data = await res.json();
    
         if(Object.keys(data).length > 0){
-            renderFeaturedCards(data['list'], data['typeList'], "For you");
+            renderCourseCards(data['list']);
             if(window.innerWidth <= 767){
-                forYouScrollListener();  
+                coursesScrollListener();  
             }else{
                 positionPaddles();
-                const rightPaddle = document.querySelector(".right-paddle");
+                const rightPaddle = document.querySelector(".courses-right-paddle");
                 rightPaddle.classList.remove('hidden');
                 paddleClickListeners(scroll, rightCounter, max);
             }
@@ -202,11 +192,11 @@ async function fetchForYouContent(scroll, rightCounter, max){
 export default async function init(el) {
     
     const featuredParent = document.createElement('div');
-    featuredParent.className = 'featured-parent';
+    featuredParent.className = 'courses-featured-parent';
 
     const leftPaddle = document.createElement('div');
-    leftPaddle.id = 'left-paddle';
-    leftPaddle.className = 'left-paddle paddle hidden';
+    leftPaddle.id = 'courses-left-paddle';
+    leftPaddle.className = 'left-paddle paddle hidden courses-left-paddle';
 
     const leftPaddleImg = document.createElement('img');
     leftPaddleImg.loading = 'lazy';
@@ -216,7 +206,7 @@ export default async function init(el) {
 
     const rightPaddle = document.createElement('div');
     rightPaddle.id = 'right-paddle';
-    rightPaddle.className = 'right-paddle paddle hidden';
+    rightPaddle.className = 'right-paddle paddle hidden courses-right-paddle';
 
     const rightPaddleImg = document.createElement('img');
     rightPaddleImg.loading = 'lazy';
@@ -232,29 +222,25 @@ export default async function init(el) {
 
     const featuredTitle = document.createElement('h3');
     featuredTitle.className = 'spectrum-Body1 featured-title';
-    featuredTitle.textContent = 'For you';
+    featuredTitle.textContent = 'Recommended Courses';
     featuredHeader.appendChild(featuredTitle);
 
     const placeholderDivForYou = document.createElement('div');
-    placeholderDivForYou.className = 'placeholder-div-for-you';
+    placeholderDivForYou.className = 'courses-placeholder-div-for-you';
 
     const cardsLimit = 5;
 
     for (let number = 0; number <= cardsLimit; number++) {
         const cardWrapper = document.createElement('div');
-        cardWrapper.id = `placeholder-div-for-you-${number}`;
+        cardWrapper.id = `courses-placeholder-div-for-you-${number}`;
         cardWrapper.className = 'featured-card-wrapper';
         if (number === cardsLimit - 1) {
             cardWrapper.classList.add('last');
         }
 
         const cardBanner = document.createElement('div');
-        cardBanner.className = 'channel-card-banner ghost-load-cards';
+        cardBanner.className = 'channel-card-banner ghost-load-cards course-banner';
         cardWrapper.appendChild(cardBanner);
-
-        const channelIcon = document.createElement('div');
-        channelIcon.className = 'channel-icon ghost-load-cards';
-        cardWrapper.appendChild(channelIcon);
 
         const cardContent = document.createElement('div');
         cardContent.className = 'channel-card-content';
@@ -266,18 +252,10 @@ export default async function init(el) {
         productTitle.className = 'product-title box-style ghost-load-cards';
         col1.appendChild(productTitle);
 
-        const productStats = document.createElement('div');
-        productStats.className = 'product-stats';
+        const productDesc = document.createElement('div');
+        productDesc.className = 'product-stat-count box-style ghost-load-cards';
+        col1.appendChild(productDesc);
 
-        const productStatIcon = document.createElement('div');
-        productStatIcon.className = 'product-stat-icon box-style ghost-load-cards';
-        productStats.appendChild(productStatIcon);
-
-        const productStatCount = document.createElement('div');
-        productStatCount.className = 'product-stat-count box-style ghost-load-cards';
-        productStats.appendChild(productStatCount);
-
-        col1.appendChild(productStats);
         cardContent.appendChild(col1);
 
         const col2 = document.createElement('div');
@@ -307,10 +285,11 @@ export default async function init(el) {
 
     window.addEventListener('resize', function() {                           
         if (window.innerWidth <= 767) {
-            forYouScrollListener();
+            coursesScrollListener();
         } else {
             positionPaddles();
         }                           
     });
-    fetchForYouContent(scroll, rightCounter, max);
+
+    fetchCoursesContent(scroll, rightCounter, max);
 }
