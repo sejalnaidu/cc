@@ -67,10 +67,10 @@
             justify-content: center;
         }
     }
-    .featured-card-wrapper.last{
+    .course-card-wrapper.last{
         margin-right: 6px;
     }
-    .featured-card-wrapper{
+    .course-card-wrapper{
         width: 288px;
         min-width: 288px;
         height: 254px;

@@ -6,7 +6,7 @@ function positionCoursePaddles(){
 
         if (element) {
             const elementRect = element.getBoundingClientRect();
-            const arrowTop = (elementRect.height / 2) - (rightPaddle.offsetHeight / 2) + 100;
+            const arrowTop = (elementRect.height / 2) - (rightPaddle.offsetHeight / 2) + 60;
 
             let rightPaddleArrowLeft = elementRect.left + window.scrollX + elementRect.width - 20;
             if (window.innerWidth > 767 && window.innerWidth < 1280) {
@@ -131,10 +131,11 @@ async function renderCourseCards(forYouCommunities){
         const resp = await fetch('https://main--cc--sejalnaidu.hlx.page/drafts/snaidu/community/authorings/recommendedcourses.json');
         const {data} = await resp.json();
 
-        const placeholders = document.querySelectorAll('.featured-card-wrapper');
+        const placeholders = document.querySelectorAll('.course-card-wrapper');
         placeholders.forEach((element, index) => {
 
             let productJson = data[index];
+            console.log(productJson);
 
             const banner = element.querySelector('.course-banner');
             banner.classList.remove('ghost-load-cards');
@@ -233,7 +234,7 @@ export default async function init(el) {
     for (let number = 0; number <= cardsLimit; number++) {
         const cardWrapper = document.createElement('div');
         cardWrapper.id = `courses-placeholder-div-for-you-${number}`;
-        cardWrapper.className = 'featured-card-wrapper';
+        cardWrapper.className = 'course-card-wrapper';
         if (number === cardsLimit - 1) {
             cardWrapper.classList.add('last');
         }
