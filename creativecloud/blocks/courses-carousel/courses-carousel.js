@@ -6,7 +6,7 @@ function positionCoursePaddles(){
 
         if (element) {
             const elementRect = element.getBoundingClientRect();
-            const arrowTop = (elementRect.height / 2) - (rightPaddle.offsetHeight / 2) + 40;
+            const arrowTop = (elementRect.height / 2) - (rightPaddle.offsetHeight / 2) + 100;
 
             let rightPaddleArrowLeft = elementRect.left + window.scrollX + elementRect.width - 20;
             if (window.innerWidth > 767 && window.innerWidth < 1280) {
@@ -205,7 +205,7 @@ export default async function init(el) {
     leftPaddle.appendChild(leftPaddleImg);
 
     const rightPaddle = document.createElement('div');
-    rightPaddle.id = 'right-paddle';
+    rightPaddle.id = 'courses-right-paddle';
     rightPaddle.className = 'right-paddle paddle hidden courses-right-paddle';
 
     const rightPaddleImg = document.createElement('img');
