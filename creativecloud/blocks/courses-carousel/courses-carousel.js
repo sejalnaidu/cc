@@ -6,7 +6,7 @@ function positionCoursePaddles(){
 
         if (element) {
             const elementRect = element.getBoundingClientRect();
-            const arrowTop = (elementRect.height / 2) - (rightPaddle.offsetHeight / 2) + 60;
+            const arrowTop = (elementRect.height / 2) - (rightPaddle.offsetHeight / 2) + 100;
 
             let rightPaddleArrowLeft = elementRect.left + window.scrollX + elementRect.width - 20;
             if (window.innerWidth > 767 && window.innerWidth < 1280) {
@@ -150,7 +150,7 @@ async function renderCourseCards(forYouCommunities){
             title.appendChild(titleSpan);
 
             const descSpan = document.createElement('span');
-            descSpan.innerHTML = productJson['description'];
+            descSpan.innerHTML = productJson['description'].substring(0, 30);
             const desc = element.querySelector('.product-stat-count');
             desc.classList.remove('ghost-load-cards');
             desc.classList.remove('box-style');
