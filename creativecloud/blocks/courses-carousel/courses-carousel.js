@@ -161,7 +161,7 @@ async function renderCourseCards(forYouCommunities){
             visit.innerHTML = "View";
 
             element.addEventListener('click', () => {
-                window.location.href = `https://localhost.adobe.com:8002/courses/${productJson['id']}`;
+                window.location.href = `https://dev.community2.adobe.com/course/${productJson['id']}`;
             });
         });
     } catch (err) {
