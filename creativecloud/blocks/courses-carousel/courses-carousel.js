@@ -150,7 +150,7 @@ async function renderCourseCards(forYouCommunities){
             title.appendChild(titleSpan);
 
             const descSpan = document.createElement('span');
-            descSpan.innerHTML = productJson['description'].substring(0, 30);
+            descSpan.innerHTML = productJson['description'].substring(0, 26) + (productJson['description'].length > 30 ? '...': '');
             const desc = element.querySelector('.product-stat-count');
             desc.classList.remove('ghost-load-cards');
             desc.classList.remove('box-style');
