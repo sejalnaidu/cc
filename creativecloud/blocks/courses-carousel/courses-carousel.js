@@ -159,6 +159,7 @@ async function renderCourseCards(forYouCommunities){
             const visit = element.querySelector('.channel-visit-btn');
             visit.classList.remove('ghost-load-cards');
             visit.innerHTML = "View";
+            
 
             element.addEventListener('click', () => {
                 window.location.href = `https://dev.community2.adobe.com/course/${productJson['id']}`;
